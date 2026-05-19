@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DevX UpTime AI — Operations Canvas (Prototype)</title>
+<meta name="description" content="Interactive prototype of the DevX UpTime AI Operations Canvas — built for refining reliability engineers." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="prototype.css" />
+</head>
+<body>
+
+<!-- ─────────── TOP BAR ─────────── -->
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="logo">
+      <span class="logo-mark">D</span>
+      <span class="logo-text">DevX UpTime AI</span>
+      <span class="env-tag">Operations Canvas</span>
+    </div>
+  </div>
+  <div class="topbar-center">
+    <button class="refinery-selector">
+      <span class="refinery-dot"></span>
+      <span>Sriracha Refinery · CDU-1</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+  </div>
+  <div class="topbar-right">
+    <button class="lang-toggle" id="langToggle">
+      <span class="lang-active">EN</span>
+      <span class="lang-sep">·</span>
+      <span class="lang-inactive">TH</span>
+    </button>
+    <div class="user-info">
+      <div class="user-avatar">RE</div>
+      <div class="user-meta">
+        <div class="user-name">Reliability Engineer</div>
+        <div class="user-shift">Night Shift · 02:47 ICT</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ─────────── DEMO HUD (visible during pitch) ─────────── -->
+<div class="demo-hud" id="demoHud">
+  <button class="hud-toggle" id="hudToggle" title="Toggle demo guide">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+  </button>
+  <div class="hud-content" id="hudContent">
+    <div class="hud-header">
+      <span class="hud-label">Demo Guide</span>
+      <span class="hud-time" id="hudTime">Step 1 of 7</span>
+    </div>
+    <div class="hud-script" id="hudScript">Welcome to the operations canvas. This is what a reliability engineer at Sriracha refinery sees the moment they sign in. Let's walk through a real scenario.</div>
+    <div class="hud-controls">
+      <button class="hud-btn" id="hudPrev">← Back</button>
+      <button class="hud-btn primary" id="hudNext">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── SIDE NAV ─────────── -->
+<aside class="sidenav">
+  <nav>
+    <a href="#dashboard" class="nav-item active" data-view="dashboard">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <span>Dashboard</span>
+    </a>
+    <a href="#asset" class="nav-item" data-view="asset">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="10"/></svg>
+      <span>Asset Detail</span>
+      <span class="nav-badge alert">1</span>
+    </a>
+    <a href="#diagnostician" class="nav-item" data-view="diagnostician">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span>Diagnostician</span>
+    </a>
+    <a href="#memory" class="nav-item" data-view="memory">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      <span>Memory</span>
+    </a>
+    <a href="#turnaround" class="nav-item" data-view="turnaround">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>Turnaround</span>
+    </a>
+    <a href="#action" class="nav-item" data-view="action">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span>Actions</span>
+    </a>
+    <a href="#outcomes" class="nav-item" data-view="outcomes">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      <span>Outcomes</span>
+    </a>
+  </nav>
+
+  <div class="sidenav-footer">
+    <div class="connection-status">
+      <span class="status-dot online"></span>
+      <div>
+        <div class="status-main">All systems online</div>
+        <div class="status-sub">12 data sources · Synced</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ─────────── MAIN CONTENT AREA ─────────── -->
+<main class="main">
+
+  <!-- VIEW 1: DASHBOARD -->
+  <section class="view active" id="view-dashboard">
+    <div class="view-header">
+      <div>
+        <h1>Operations overview</h1>
+        <p class="view-subtitle">Sriracha Refinery · 487 monitored assets · Last update 14 seconds ago</p>
+      </div>
+      <div class="view-actions">
+        <span class="time-display">02:47 ICT · Tue 19 May</span>
+      </div>
+    </div>
+
+    <!-- Top KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Asset health</div>
+        <div class="kpi-value">94.2<span class="kpi-unit">%</span></div>
+        <div class="kpi-trend good">↑ 1.8% from yesterday</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Active alerts</div>
+        <div class="kpi-value">4</div>
+        <div class="kpi-trend warning">1 critical · 3 advisory</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Open work orders</div>
+        <div class="kpi-value">23</div>
+        <div class="kpi-trend">8 in progress · 15 queued</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Days to next T/A</div>
+        <div class="kpi-value">127</div>
+        <div class="kpi-trend">Q3 2026 scope optimizing</div>
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Active alerts list -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Active alerts</h3>
+          <span class="card-meta">Sentinel · Continuous monitoring</span>
+        </div>
+        <div class="alert-list">
+          <a href="#asset" class="alert-row critical" data-view="asset">
+            <div class="alert-icon-wrap critical">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="alert-body">
+              <div class="alert-title">P-204 · Bearing vibration drift</div>
+              <div class="alert-meta">CDU-1 · Rotating Equipment · 14 days to action threshold</div>
+            </div>
+            <div class="alert-stats">
+              <div class="alert-confidence">94% confidence</div>
+              <div class="alert-time">Detected 11 min ago</div>
+            </div>
+            <svg class="alert-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+
+          <div class="alert-row advisory">
+            <div class="alert-icon-wrap advisory">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="alert-body">
+              <div class="alert-title">E-450 · Heat exchanger fouling trend</div>
+              <div class="alert-meta">VDU · Static Equipment · 38 days to inspection</div>
+            </div>
+            <div class="alert-stats">
+              <div class="alert-confidence">78% confidence</div>
+              <div class="alert-time">Tracking 3 days</div>
+            </div>
+          </div>
+
+          <div class="alert-row advisory">
+            <div class="alert-icon-wrap advisory">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="alert-body">
+              <div class="alert-title">C-301 · Compressor seal degradation</div>
+              <div class="alert-meta">FCC Unit · Rotating Equipment · 62 days estimated</div>
+            </div>
+            <div class="alert-stats">
+              <div class="alert-confidence">71% confidence</div>
+              <div class="alert-time">Tracking 8 days</div>
+            </div>
+          </div>
+
+          <div class="alert-row info">
+            <div class="alert-icon-wrap info">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="alert-body">
+              <div class="alert-title">V-127 · Pressure relief valve calibration</div>
+              <div class="alert-meta">Hydrotreater · Instrumentation · Schedule maintenance</div>
+            </div>
+            <div class="alert-stats">
+              <div class="alert-confidence">Routine</div>
+              <div class="alert-time">14 days overdue</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unit visualization -->
+      <div class="card">
+        <div class="card-header">
+          <h3>CDU-1 unit health</h3>
+          <span class="card-meta">Real-time · 50 critical assets</span>
+        </div>
+        <div class="unit-grid">
+          <div class="unit-asset healthy" title="P-201"><span>P-201</span></div>
+          <div class="unit-asset healthy" title="P-202"><span>P-202</span></div>
+          <div class="unit-asset healthy" title="P-203"><span>P-203</span></div>
+          <div class="unit-asset alert" title="P-204 — Anomaly detected"><span>P-204</span></div>
+          <div class="unit-asset healthy" title="P-205"><span>P-205</span></div>
+          <div class="unit-asset healthy" title="E-301"><span>E-301</span></div>
+          <div class="unit-asset healthy" title="E-302"><span>E-302</span></div>
+          <div class="unit-asset healthy" title="E-303"><span>E-303</span></div>
+          <div class="unit-asset healthy" title="C-101"><span>C-101</span></div>
+          <div class="unit-asset healthy" title="C-102"><span>C-102</span></div>
+          <div class="unit-asset healthy" title="V-101"><span>V-101</span></div>
+          <div class="unit-asset healthy" title="V-102"><span>V-102</span></div>
+          <div class="unit-asset healthy" title="V-103"><span>V-103</span></div>
+          <div class="unit-asset healthy" title="T-401"><span>T-401</span></div>
+          <div class="unit-asset healthy" title="T-402"><span>T-402</span></div>
+          <div class="unit-asset healthy" title="F-101"><span>F-101</span></div>
+          <div class="unit-asset healthy" title="F-102"><span>F-102</span></div>
+          <div class="unit-asset healthy" title="H-201"><span>H-201</span></div>
+          <div class="unit-asset healthy" title="H-202"><span>H-202</span></div>
+          <div class="unit-asset healthy" title="R-101"><span>R-101</span></div>
+          <div class="unit-asset healthy" title="R-102"><span>R-102</span></div>
+          <div class="unit-asset healthy" title="S-501"><span>S-501</span></div>
+          <div class="unit-asset healthy" title="S-502"><span>S-502</span></div>
+          <div class="unit-asset healthy" title="S-503"><span>S-503</span></div>
+        </div>
+        <div class="unit-legend">
+          <span class="legend-item"><span class="legend-dot healthy"></span>Healthy</span>
+          <span class="legend-item"><span class="legend-dot alert"></span>Anomaly</span>
+          <span class="legend-item"><span class="legend-dot info"></span>Maintenance due</span>
+        </div>
+      </div>
+
+      <!-- Agent activity -->
+      <div class="card card-wide">
+        <div class="card-header">
+          <h3>Agent activity · Last 24 hours</h3>
+          <span class="card-meta">All 4 agents · 487 assets monitored</span>
+        </div>
+        <div class="agent-activity">
+          <div class="agent-pill">
+            <div class="agent-pill-icon sentinel">S</div>
+            <div class="agent-pill-body">
+              <div class="agent-pill-name">Sentinel</div>
+              <div class="agent-pill-stat">487 assets scanned · 1 anomaly flagged</div>
+            </div>
+            <div class="agent-pill-status active"><span class="status-dot"></span>Active</div>
+          </div>
+          <div class="agent-pill">
+            <div class="agent-pill-icon diagnostician">D</div>
+            <div class="agent-pill-body">
+              <div class="agent-pill-name">Diagnostician</div>
+              <div class="agent-pill-stat">3 RCAs generated · 2 reviewed &amp; approved</div>
+            </div>
+            <div class="agent-pill-status active"><span class="status-dot"></span>Ready</div>
+          </div>
+          <div class="agent-pill">
+            <div class="agent-pill-icon memory">M</div>
+            <div class="agent-pill-body">
+              <div class="agent-pill-name">Memory</div>
+              <div class="agent-pill-stat">2,847 incidents indexed · 14 queries today</div>
+            </div>
+            <div class="agent-pill-status active"><span class="status-dot"></span>Ready</div>
+          </div>
+          <div class="agent-pill">
+            <div class="agent-pill-icon turnaround">T</div>
+            <div class="agent-pill-body">
+              <div class="agent-pill-name">Turnaround Optimizer</div>
+              <div class="agent-pill-stat">Q3 2026 scope · 312 items analyzed</div>
+            </div>
+            <div class="agent-pill-status active"><span class="status-dot"></span>Ready</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIEW 2: ASSET DETAIL (P-204) -->
+  <section class="view" id="view-asset">
+    <div class="view-header">
+      <div>
+        <div class="breadcrumb">
+          <a href="#dashboard" data-view="dashboard">Dashboard</a>
+          <span>›</span>
+          <span>CDU-1</span>
+          <span>›</span>
+          <span class="current">Pump P-204</span>
+        </div>
+        <h1>Pump P-204 <span class="title-meta">Crude Feed Pump</span></h1>
+        <p class="view-subtitle">Tag: PMP-CDU1-204 · Function: Primary crude feed · Vendor: Sulzer · Service: 11.2 years</p>
+      </div>
+      <div class="view-actions">
+        <span class="status-badge critical">
+          <span class="status-dot"></span>
+          Anomaly · 94% confidence
+        </span>
+      </div>
+    </div>
+
+    <div class="asset-grid">
+
+      <!-- Sentinel detection banner -->
+      <div class="sentinel-banner">
+        <div class="sentinel-banner-icon">
+          <span class="sentinel-pulse"></span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="10"/></svg>
+        </div>
+        <div class="sentinel-banner-body">
+          <div class="sentinel-banner-label">SENTINEL · Anomaly Detection</div>
+          <div class="sentinel-banner-title">Bearing vibration drift detected · 14 days to action threshold</div>
+          <div class="sentinel-banner-desc">Pattern signature matches early-stage rolling element bearing wear. Confidence rising over past 72 hours. Recommended: schedule inspection within 7 days.</div>
+        </div>
+        <button class="btn-primary" data-view="diagnostician">
+          Run Diagnostician
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      <!-- Vibration chart -->
+      <div class="card card-wide">
+        <div class="card-header">
+          <div>
+            <h3>Vibration signature · Bearing housing radial (Velocity RMS)</h3>
+            <span class="card-meta">Sensor VT-2031A · 10ms sampling · Live</span>
+          </div>
+          <div class="chart-controls">
+            <button class="chip active">90 days</button>
+            <button class="chip">30 days</button>
+            <button class="chip">7 days</button>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg" class="vib-chart">
+            <!-- Grid lines -->
+            <g class="grid">
+              <line x1="60" y1="20" x2="780" y2="20" stroke="#e5e9f0" stroke-dasharray="2,2"/>
+              <line x1="60" y1="80" x2="780" y2="80" stroke="#e5e9f0" stroke-dasharray="2,2"/>
+              <line x1="60" y1="140" x2="780" y2="140" stroke="#e5e9f0" stroke-dasharray="2,2"/>
+              <line x1="60" y1="200" x2="780" y2="200" stroke="#e5e9f0" stroke-dasharray="2,2"/>
+              <line x1="60" y1="260" x2="780" y2="260" stroke="#e5e9f0"/>
+            </g>
+
+            <!-- Y axis labels -->
+            <g font-family="JetBrains Mono, monospace" font-size="9" fill="#94a3b8" text-anchor="end">
+              <text x="55" y="24">12 mm/s</text>
+              <text x="55" y="84">9</text>
+              <text x="55" y="144">6</text>
+              <text x="55" y="204">3</text>
+              <text x="55" y="264">0</text>
+            </g>
+
+            <!-- Action threshold zone -->
+            <rect x="60" y="20" width="720" height="40" fill="#ef4444" opacity="0.08"/>
+            <line x1="60" y1="60" x2="780" y2="60" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,4" opacity="0.5"/>
+            <text x="775" y="56" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#ef4444" text-anchor="end">Action threshold · 10.5 mm/s</text>
+
+            <!-- Alert threshold zone -->
+            <rect x="60" y="60" width="720" height="40" fill="#f59e0b" opacity="0.06"/>
+            <line x1="60" y1="100" x2="780" y2="100" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4,4" opacity="0.5"/>
+            <text x="775" y="96" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#f59e0b" text-anchor="end">Alert · 7.5 mm/s</text>
+
+            <!-- Baseline -->
+            <line x1="60" y1="200" x2="780" y2="200" stroke="#10b981" stroke-width="1" stroke-dasharray="4,4" opacity="0.5"/>
+            <text x="775" y="196" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#10b981" text-anchor="end">Baseline · 3.0 mm/s</text>
+
+            <!-- Historical line (90d-ago to now) -->
+            <path d="M 60 205 L 75 203 L 90 207 L 105 201 L 120 205 L 135 199 L 150 203 L 165 200 L 180 198 L 195 196 L 210 199 L 225 195 L 240 192 L 255 194 L 270 190 L 285 188 L 300 185 L 315 187 L 330 183 L 345 180 L 360 178 L 375 175 L 390 172 L 405 169 L 420 165 L 435 162 L 450 158 L 465 155 L 480 150 L 495 147 L 510 142 L 525 140 L 540 135 L 555 132 L 570 128 L 585 125 L 600 122 L 615 118 L 630 115 L 645 112 L 660 108 L 675 105 L 690 102"
+                  stroke="#2563eb" stroke-width="2" fill="none"/>
+
+            <!-- Anomaly zone -->
+            <rect x="620" y="20" width="160" height="240" fill="#ef4444" opacity="0.05" rx="4"/>
+
+            <!-- Forecast (dotted) -->
+            <path d="M 690 102 L 705 96 L 720 90 L 735 82 L 750 75 L 765 68 L 780 62"
+                  stroke="#ef4444" stroke-width="2" stroke-dasharray="4,3" fill="none"/>
+
+            <!-- Forecast confidence band -->
+            <path d="M 690 102 L 705 92 L 720 84 L 735 74 L 750 64 L 765 55 L 780 48 L 780 76 L 765 81 L 750 86 L 735 90 L 720 96 L 705 100 L 690 102 Z"
+                  fill="#ef4444" opacity="0.1"/>
+
+            <!-- "Now" marker -->
+            <line x1="690" y1="20" x2="690" y2="260" stroke="#0a1628" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.4"/>
+            <circle cx="690" cy="102" r="5" fill="#2563eb" stroke="#fff" stroke-width="2"/>
+            <text x="690" y="14" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#0a1628" text-anchor="middle">NOW · 4.8 mm/s</text>
+
+            <!-- X-axis labels -->
+            <g font-family="JetBrains Mono, monospace" font-size="9" fill="#94a3b8" text-anchor="middle">
+              <text x="60" y="278">90d ago</text>
+              <text x="240" y="278">60d ago</text>
+              <text x="420" y="278">30d ago</text>
+              <text x="600" y="278">Today</text>
+              <text x="770" y="278">+14d</text>
+            </g>
+
+            <!-- Annotation: anomaly detected -->
+            <g>
+              <line x1="540" y1="135" x2="540" y2="240" stroke="#f59e0b" stroke-width="1" stroke-dasharray="2,2"/>
+              <rect x="488" y="240" width="104" height="20" rx="3" fill="#f59e0b"/>
+              <text x="540" y="254" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#fff" text-anchor="middle">Drift onset detected</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="chart-stats">
+          <div>
+            <div class="stat-label">Current reading</div>
+            <div class="stat-value">4.8 <span class="stat-unit">mm/s</span></div>
+          </div>
+          <div>
+            <div class="stat-label">14-day projection</div>
+            <div class="stat-value alert">11.2 <span class="stat-unit">mm/s</span></div>
+          </div>
+          <div>
+            <div class="stat-label">Action threshold</div>
+            <div class="stat-value">10.5 <span class="stat-unit">mm/s</span></div>
+          </div>
+          <div>
+            <div class="stat-label">Days to threshold</div>
+            <div class="stat-value alert">11.3 <span class="stat-unit">days</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Asset metadata -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Asset context</h3>
+          <span class="card-meta">From Industrial Data Model</span>
+        </div>
+        <dl class="meta-list">
+          <div><dt>Asset tag</dt><dd>PMP-CDU1-204</dd></div>
+          <div><dt>Manufacturer</dt><dd>Sulzer · OHH 8x6-13</dd></div>
+          <div><dt>Service since</dt><dd>March 2014 · 11.2 yrs</dd></div>
+          <div><dt>Function</dt><dd>Primary crude feed to CDU-1</dd></div>
+          <div><dt>P&amp;ID reference</dt><dd>DWG-CDU1-3401-R7</dd></div>
+          <div><dt>Last overhaul</dt><dd>August 2023 · 21 months ago</dd></div>
+          <div><dt>Criticality class</dt><dd>A1 (No standby)</dd></div>
+          <div><dt>Process impact</dt><dd>Full CDU-1 shutdown if failed</dd></div>
+        </dl>
+      </div>
+
+      <!-- Connected sensors -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Connected sensors</h3>
+          <span class="card-meta">12 active · OSIsoft PI</span>
+        </div>
+        <div class="sensor-list">
+          <div class="sensor-row anomaly">
+            <span class="mono">VT-2031A</span>
+            <span>Bearing housing vibration · radial</span>
+            <span class="sensor-value">4.8 mm/s</span>
+          </div>
+          <div class="sensor-row">
+            <span class="mono">VT-2031B</span>
+            <span>Bearing housing vibration · axial</span>
+            <span class="sensor-value">2.1 mm/s</span>
+          </div>
+          <div class="sensor-row">
+            <span class="mono">TT-2032</span>
+            <span>Bearing temperature</span>
+            <span class="sensor-value">68.2 °C</span>
+          </div>
+          <div class="sensor-row">
+            <span class="mono">PT-2033</span>
+            <span>Discharge pressure</span>
+            <span class="sensor-value">14.7 bar</span>
+          </div>
+          <div class="sensor-row">
+            <span class="mono">FT-2034</span>
+            <span>Flow rate</span>
+            <span class="sensor-value">412 m³/h</span>
+          </div>
+          <div class="sensor-row">
+            <span class="mono">ST-2035</span>
+            <span>Shaft speed</span>
+            <span class="sensor-value">2980 rpm</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIEW 3: DIAGNOSTICIAN -->
+  <section class="view" id="view-diagnostician">
+    <div class="view-header">
+      <div>
+        <div class="breadcrumb">
+          <a href="#dashboard" data-view="dashboard">Dashboard</a>
+          <span>›</span>
+          <a href="#asset" data-view="asset">P-204</a>
+          <span>›</span>
+          <span class="current">Diagnostician</span>
+        </div>
+        <h1>Root Cause Analysis · P-204</h1>
+        <p class="view-subtitle">Generated by Diagnostician · Citation-grounded · Engineer review required</p>
+      </div>
+      <div class="view-actions">
+        <button class="btn-secondary" id="regenerateRca">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Regenerate
+        </button>
+      </div>
+    </div>
+
+    <div class="rca-grid">
+
+      <!-- Generation status -->
+      <div class="generation-status" id="generationStatus">
+        <div class="gen-stage active" data-stage="1">
+          <div class="gen-stage-num">1</div>
+          <div class="gen-stage-text">Pulling sensor history · 90d window</div>
+        </div>
+        <div class="gen-stage active" data-stage="2">
+          <div class="gen-stage-num">2</div>
+          <div class="gen-stage-text">Cross-referencing P&amp;ID and OEM specs</div>
+        </div>
+        <div class="gen-stage active" data-stage="3">
+          <div class="gen-stage-num">3</div>
+          <div class="gen-stage-text">Querying Memory for similar incidents</div>
+        </div>
+        <div class="gen-stage active" data-stage="4">
+          <div class="gen-stage-num">4</div>
+          <div class="gen-stage-text">Synthesizing causal hypothesis</div>
+        </div>
+        <div class="gen-stage active" data-stage="5">
+          <div class="gen-stage-num">5</div>
+          <div class="gen-stage-text">Brief ready · 28 seconds</div>
+        </div>
+      </div>
+
+      <!-- RCA Brief -->
+      <div class="card rca-brief">
+        <div class="rca-meta">
+          <span class="rca-tag">Brief #RCA-2026-05-19-0247</span>
+          <span class="rca-tag">Generated 02:47 ICT</span>
+          <span class="rca-tag confidence">87% confidence</span>
+        </div>
+
+        <h2 class="rca-title">Probable cause: lubricant degradation leading to early-stage bearing wear</h2>
+
+        <div class="rca-section">
+          <h4>Causal hypothesis</h4>
+          <p>
+            The radial vibration drift on bearing housing VT-2031A is consistent with early-stage rolling element bearing fatigue. The signature lacks the characteristic high-frequency components of cage damage or outer race spalling, suggesting the failure is in its initial degradation phase, with an estimated 11–14 days before the action threshold (10.5 mm/s) is breached.
+            <a class="cite" data-cite="1">[1]</a>
+          </p>
+          <p>
+            Bearing temperature (TT-2032) has trended upward 6.4°C over the same 28-day window, consistent with increasing friction. <a class="cite" data-cite="2">[2]</a> Pump operating point (discharge pressure, flow) is nominal, ruling out hydraulic loading as the primary cause.
+            <a class="cite" data-cite="3">[3]</a>
+          </p>
+        </div>
+
+        <div class="rca-section">
+          <h4>Most likely root cause</h4>
+          <p>
+            Lubricant degradation. The last documented oil change was 21 months ago (post-overhaul, August 2023). <a class="cite" data-cite="4">[4]</a> OEM service interval for this pump class under continuous duty is 18 months. Bearing housing temperature signature suggests viscosity loss consistent with oxidation-stage lubricant aging.
+          </p>
+        </div>
+
+        <div class="rca-section">
+          <h4>Supporting evidence from past incidents</h4>
+          <p>
+            Three closely-matching incidents in Memory: <a class="cite" data-cite="5">[5]</a>
+          </p>
+          <ul class="past-incidents">
+            <li>
+              <strong>P-204 itself · Jun 2022</strong> — Identical signature, resolved by lubricant change + bearing inspection. No bearing replacement required. Resolution time: 4.5 hours.
+            </li>
+            <li>
+              <strong>P-308 (Rayong FCC) · Mar 2024</strong> — Similar pattern on identical pump class. Caught at 6.2 mm/s. Lubricant change resolved.
+            </li>
+            <li>
+              <strong>P-201 (CDU-1, this unit) · Nov 2023</strong> — Same class, similar drift. Required bearing replacement at next planned outage. Lubricant degradation root-caused.
+            </li>
+          </ul>
+        </div>
+
+        <div class="rca-section">
+          <h4>Recommended action</h4>
+          <div class="recommendation-card">
+            <div class="reco-priority">
+              <span class="priority-pill medium">Medium urgency · 7-day window</span>
+            </div>
+            <ol class="reco-steps">
+              <li><strong>Schedule lubricant sample</strong> within 72 hours · ISO 4406 + ferrous PQ index · Estimated 2 hours, no shutdown required</li>
+              <li><strong>If contamination confirmed:</strong> oil change during next opportunistic window · 4 hours, no production impact</li>
+              <li><strong>Continue Sentinel monitoring</strong> · vibration band threshold for re-alert: 6.0 mm/s · escalate if reached</li>
+              <li><strong>Defer bearing replacement</strong> to Q3 2026 planned T/A · add to Turnaround Optimizer scope review</li>
+            </ol>
+            <div class="reco-savings">
+              <div>
+                <div class="reco-stat-label">Estimated value if action taken now</div>
+                <div class="reco-stat-value">Avoided unplanned outage · Sentinel-class event prevention</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Citations panel -->
+        <div class="rca-section citations">
+          <h4>Citations · Every claim grounded in source data</h4>
+          <div class="citation-list">
+            <div class="citation"><span class="cite-num">[1]</span><span>OSIsoft PI · Tag VT-2031A · 2026-02-18 to 2026-05-19 · 90-day vibration trend, FFT analysis attached</span></div>
+            <div class="citation"><span class="cite-num">[2]</span><span>OSIsoft PI · Tag TT-2032 · 28-day rolling avg, baseline comparison · Trend: +6.4°C</span></div>
+            <div class="citation"><span class="cite-num">[3]</span><span>OSIsoft PI · Tags PT-2033, FT-2034 · Current vs nominal operating envelope · No deviation</span></div>
+            <div class="citation"><span class="cite-num">[4]</span><span>SAP PM · Work Order WO-2023-08-1147 · "Pump P-204 major overhaul including bearing replacement and oil change" · Completed 2023-08-14</span></div>
+            <div class="citation"><span class="cite-num">[5]</span><span>Memory · 3 matched incidents · Similarity scores 0.91, 0.87, 0.84 · Query Memory for full case details</span></div>
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="rca-actions">
+          <button class="btn-primary" data-view="action">
+            Approve and create work order
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+          <button class="btn-secondary" data-view="memory">
+            Explore past incidents
+          </button>
+          <button class="btn-text">Edit recommendation</button>
+          <button class="btn-text">Add engineer note</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIEW 4: MEMORY -->
+  <section class="view" id="view-memory">
+    <div class="view-header">
+      <div>
+        <div class="breadcrumb">
+          <a href="#dashboard" data-view="dashboard">Dashboard</a>
+          <span>›</span>
+          <span class="current">Memory</span>
+        </div>
+        <h1>Institutional Memory</h1>
+        <p class="view-subtitle">2,847 incidents indexed · Bilingual Thai/English · Engineer-attributed</p>
+      </div>
+      <div class="view-actions">
+        <span class="status-badge info">
+          <span class="status-dot"></span>
+          14 queries today
+        </span>
+      </div>
+    </div>
+
+    <div class="memory-grid">
+      <!-- Search bar -->
+      <div class="memory-search-card">
+        <div class="search-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="memory-search" id="memorySearch" placeholder="Search incidents · Try: 'pump bearing vibration' or 'P-204 oil contamination'" value="pump bearing vibration drift">
+          <button class="search-btn">Search</button>
+        </div>
+        <div class="search-filters">
+          <span class="filter-label">Filters:</span>
+          <button class="chip active">All units</button>
+          <button class="chip">CDU-1 only</button>
+          <button class="chip">Rotating equipment</button>
+          <button class="chip">Last 5 years</button>
+          <button class="chip lang-thai">ภาษาไทย Thai</button>
+        </div>
+        <div class="search-meta">
+          <span><strong>3 closely-matching incidents</strong> found · 18 partially related · Search completed 0.4s</span>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="memory-results">
+
+        <div class="memory-card highlighted">
+          <div class="memory-card-header">
+            <div>
+              <div class="memory-similarity">Similarity: 0.91</div>
+              <div class="memory-title">P-204 · CDU-1 · Bearing vibration drift</div>
+              <div class="memory-meta">Sriracha Refinery · Same asset · 22 months ago · June 2022</div>
+            </div>
+            <span class="memory-tag resolved">Resolved</span>
+          </div>
+          <div class="memory-card-body">
+            <div class="memory-section">
+              <h5>What happened</h5>
+              <p>Identical vibration signature on VT-2031A. Drift onset over 18-day period. Sentinel-class detection at 4.2 mm/s. Lubricant analysis showed elevated ferrous PQ (38 vs baseline 12) and viscosity drop of 14%.</p>
+            </div>
+            <div class="memory-section">
+              <h5>How it was resolved</h5>
+              <p>Oil change with synthetic ISO VG 68 lubricant during opportunistic 4-hour window. Bearing inspection revealed minor wear, no replacement needed. Resolution time 4.5 hours, no production loss.</p>
+            </div>
+            <div class="memory-section">
+              <h5>Engineer note</h5>
+              <p class="engineer-note">"This pump runs hot in monsoon season. We've seen this exact pattern before — always lubricant first, bearing second. Don't replace bearings until you've ruled out oil."</p>
+              <span class="note-attribution">Senior Reliability Engineer · CDU-1 Team · Logged 2022-06-18</span>
+            </div>
+          </div>
+          <div class="memory-card-footer">
+            <span class="footer-stat">Outcome: Avoided unplanned outage</span>
+            <button class="btn-text">View full case ›</button>
+          </div>
+        </div>
+
+        <div class="memory-card">
+          <div class="memory-card-header">
+            <div>
+              <div class="memory-similarity">Similarity: 0.87</div>
+              <div class="memory-title">P-308 · FCC Unit · Bearing vibration trend</div>
+              <div class="memory-meta">Rayong Refinery · Similar asset class · 14 months ago · March 2024</div>
+            </div>
+            <span class="memory-tag resolved">Resolved</span>
+          </div>
+          <div class="memory-card-body">
+            <div class="memory-section">
+              <h5>What happened</h5>
+              <p>Sulzer OHH-class pump on identical service. Vibration drift caught earlier (6.2 mm/s peak). Different refinery, same pump class.</p>
+            </div>
+            <div class="memory-section">
+              <h5>How it was resolved</h5>
+              <p>Lubricant change resolved the issue. No bearing intervention required. Confirmed lubricant degradation root cause via oil analysis.</p>
+            </div>
+          </div>
+          <div class="memory-card-footer">
+            <span class="footer-stat">Outcome: Resolved, lubricant root cause confirmed</span>
+            <button class="btn-text">View full case ›</button>
+          </div>
+        </div>
+
+        <div class="memory-card">
+          <div class="memory-card-header">
+            <div>
+              <div class="memory-similarity">Similarity: 0.84</div>
+              <div class="memory-title">P-201 · CDU-1 · Bearing wear with vibration</div>
+              <div class="memory-meta">Sriracha Refinery · Same unit · 18 months ago · November 2023</div>
+            </div>
+            <span class="memory-tag resolved">Resolved</span>
+          </div>
+          <div class="memory-card-body">
+            <div class="memory-section">
+              <h5>What happened</h5>
+              <p>Similar drift pattern but caught later in degradation cycle (8.1 mm/s at detection). Same unit, adjacent pump.</p>
+            </div>
+            <div class="memory-section">
+              <h5>How it was resolved</h5>
+              <p>Deferred to planned T/A. Bearing replacement and lubricant change executed during scheduled outage. Post-mortem confirmed lubricant degradation as initiating cause.</p>
+            </div>
+            <div class="memory-section">
+              <h5>Engineer note</h5>
+              <p class="engineer-note">"Wish we'd caught it earlier — by 8 mm/s the bearing was already compromised. The early-warning matters."</p>
+              <span class="note-attribution">Reliability Lead · Logged 2023-11-22</span>
+            </div>
+          </div>
+          <div class="memory-card-footer">
+            <span class="footer-stat">Outcome: Bearing replacement at next T/A · No unplanned outage</span>
+            <button class="btn-text">View full case ›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIEW 5: TURNAROUND -->
+  <section class="view" id="view-turnaround">
+    <div class="view-header">
+      <div>
+        <div class="breadcrumb">
+          <a href="#dashboard" data-view="dashboard">Dashboard</a>
+          <span>›</span>
+          <span class="current">Turnaround</span>
+        </div>
+        <h1>CDU-1 Turnaround · Q3 2026</h1>
+        <p class="view-subtitle">Scheduled · September 14 – October 8, 2026 · 24 days · 312 scope items</p>
+      </div>
+      <div class="view-actions">
+        <span class="status-badge info">
+          <span class="status-dot"></span>
+          127 days · Scope optimizing
+        </span>
+      </div>
+    </div>
+
+    <div class="turnaround-grid">
+
+      <!-- Summary KPIs -->
+      <div class="ta-summary">
+        <div class="ta-summary-card">
+          <div class="ta-kpi-label">Original scope</div>
+          <div class="ta-kpi-value">312</div>
+          <div class="ta-kpi-sub">items planned</div>
+        </div>
+        <div class="ta-summary-card">
+          <div class="ta-kpi-label">Recommended scope</div>
+          <div class="ta-kpi-value good">271</div>
+          <div class="ta-kpi-sub">items · 41 deferred</div>
+        </div>
+        <div class="ta-summary-card">
+          <div class="ta-kpi-label">Critical additions</div>
+          <div class="ta-kpi-value warning">8</div>
+          <div class="ta-kpi-sub">items added by Sentinel intel</div>
+        </div>
+        <div class="ta-summary-card">
+          <div class="ta-kpi-label">Duration impact</div>
+          <div class="ta-kpi-value good">−3.2 days</div>
+          <div class="ta-kpi-sub">From 24 to 20.8 days</div>
+        </div>
+      </div>
+
+      <!-- Recommendations table -->
+      <div class="card card-wide">
+        <div class="card-header">
+          <h3>Turnaround Optimizer recommendations</h3>
+          <span class="card-meta">Ranked by asset risk-weighted value</span>
+        </div>
+
+        <table class="ta-table">
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th>Original Plan</th>
+              <th>Recommendation</th>
+              <th>Rationale</th>
+              <th class="num">Risk score</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="ta-row warning">
+              <td>
+                <div class="cell-primary">P-204</div>
+                <div class="cell-sub">Crude feed pump</div>
+              </td>
+              <td>Inspect bearings only</td>
+              <td><span class="action-pill add">Add: Replace bearings + seals</span></td>
+              <td>Sentinel detected drift · current intervention deferred to T/A · prevents in-cycle failure</td>
+              <td class="num"><span class="risk-bar high"><span style="width:78%"></span></span> 78</td>
+              <td><button class="btn-text">Review</button></td>
+            </tr>
+            <tr class="ta-row warning">
+              <td>
+                <div class="cell-primary">C-301</div>
+                <div class="cell-sub">FCC compressor</div>
+              </td>
+              <td>Visual inspection</td>
+              <td><span class="action-pill add">Add: Seal replacement</span></td>
+              <td>Tracking 8-day seal degradation pattern · escalating</td>
+              <td class="num"><span class="risk-bar high"><span style="width:71%"></span></span> 71</td>
+              <td><button class="btn-text">Review</button></td>
+            </tr>
+            <tr class="ta-row good">
+              <td>
+                <div class="cell-primary">E-203 to E-208</div>
+                <div class="cell-sub">6 heat exchangers · VDU bank</div>
+              </td>
+              <td>Open and clean all</td>
+              <td><span class="action-pill defer">Defer 4 of 6 · Inspect 2</span></td>
+              <td>Fouling rate analysis shows 4 are within tolerance · save 2.1 days</td>
+              <td class="num"><span class="risk-bar low"><span style="width:22%"></span></span> 22</td>
+              <td><button class="btn-text">Review</button></td>
+            </tr>
+            <tr class="ta-row good">
+              <td>
+                <div class="cell-primary">V-101 to V-104</div>
+                <div class="cell-sub">4 pressure vessels</div>
+              </td>
+              <td>Internal inspection all</td>
+              <td><span class="action-pill defer">Defer all 4</span></td>
+              <td>Last inspection 2024 · corrosion modeling shows next due 2028</td>
+              <td class="num"><span class="risk-bar low"><span style="width:15%"></span></span> 15</td>
+              <td><button class="btn-text">Review</button></td>
+            </tr>
+            <tr class="ta-row">
+              <td>
+                <div class="cell-primary">T-401</div>
+                <div class="cell-sub">Main fractionator</div>
+              </td>
+              <td>Tray inspection</td>
+              <td><span class="action-pill keep">Keep as planned</span></td>
+              <td>Cycle-aligned · critical path · risk justified</td>
+              <td class="num"><span class="risk-bar medium"><span style="width:54%"></span></span> 54</td>
+              <td><button class="btn-text">Review</button></td>
+            </tr>
+            <tr class="ta-row good">
+              <td>
+                <div class="cell-primary">31 minor instruments</div>
+                <div class="cell-sub">Various</div>
+              </td>
+              <td>Full calibration</td>
+              <td><span class="action-pill defer">Defer 23 of 31</span></td>
+              <td>Drift-tracking shows 23 within spec · target next calibration cycle</td>
+              <td class="num"><span class="risk-bar low"><span style="width:12%"></span></span> 12</td>
+              <td><button class="btn-text">Review</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Outcome summary -->
+      <div class="card ta-outcome-card">
+        <h3>Optimization summary</h3>
+        <p>The Turnaround Optimizer recommends a net reduction of <strong>41 scope items</strong>, while adding <strong>8 risk-driven items</strong> identified by Sentinel and historical Memory data. Net effect: <strong>3.2 days shorter turnaround</strong>, with confidence intervals based on 14 years of plant turnaround history.</p>
+        <div class="ta-outcome-row">
+          <div class="ta-outcome-stat">
+            <div class="ta-outcome-label">Items deferred (low-risk)</div>
+            <div class="ta-outcome-value">41</div>
+          </div>
+          <div class="ta-outcome-stat">
+            <div class="ta-outcome-label">Items added (high-risk)</div>
+            <div class="ta-outcome-value">8</div>
+          </div>
+          <div class="ta-outcome-stat">
+            <div class="ta-outcome-label">Duration reduction</div>
+            <div class="ta-outcome-value good">−3.2 days</div>
+          </div>
+          <div class="ta-outcome-stat">
+            <div class="ta-outcome-label">Confidence level</div>
+            <div class="ta-outcome-value">High</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIEW 6: ACTION HANDOFF -->
+  <section class="view" id="view-action">
+    <div class="view-header">
+      <div>
+        <div class="breadcrumb">
+          <a href="#dashboard" data-view="dashboard">Dashboard</a>
+          <span>›</span>
+          <a href="#diagnostician" data-view="diagnostician">RCA Brief</a>
+          <span>›</span>
+          <span class="current">Action</span>
+        </div>
+        <h1>Engineer review &amp; MOC handoff</h1>
+        <p class="view-subtitle">Every action enters your existing change management workflow · Nothing bypasses</p>
+      </div>
+    </div>
+
+    <div class="action-grid">
+
+      <!-- Approval card -->
+      <div class="card approval-card">
+        <div class="card-header">
+          <h3>Pending engineer approval</h3>
+          <span class="card-meta">Required before any action</span>
+        </div>
+
+        <div class="approval-summary">
+          <div class="approval-item">
+            <span class="approval-label">Recommendation</span>
+            <span class="approval-value">Lubricant sample &amp; conditional oil change for P-204</span>
+          </div>
+          <div class="approval-item">
+            <span class="approval-label">Generated by</span>
+            <span class="approval-value">Diagnostician agent · 87% confidence</span>
+          </div>
+          <div class="approval-item">
+            <span class="approval-label">Risk classification</span>
+            <span class="approval-value">Medium · No production impact · No MOC required for sample-only step</span>
+          </div>
+          <div class="approval-item">
+            <span class="approval-label">Estimated duration</span>
+            <span class="approval-value">2h sample · +4h conditional oil change</span>
+          </div>
+        </div>
+
+        <div class="approval-actions">
+          <button class="btn-primary big" id="approveBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Approve &amp; create work order
+          </button>
+          <button class="btn-secondary">Modify recommendation</button>
+          <button class="btn-text">Reject with reason</button>
+        </div>
+
+        <div class="approval-success" id="approvalSuccess">
+          <div class="success-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h3>Work order created</h3>
+          <p><span class="mono">WO-2026-05-19-0247</span> · Routed to CDU-1 maintenance queue · MOC ticket auto-generated</p>
+        </div>
+      </div>
+
+      <!-- Workflow -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Workflow integration</h3>
+          <span class="card-meta">No process bypassed</span>
+        </div>
+        <div class="workflow-flow">
+          <div class="wf-step done">
+            <div class="wf-icon">✓</div>
+            <div class="wf-body">
+              <div class="wf-title">Sentinel detection</div>
+              <div class="wf-meta">02:36 ICT · Auto</div>
+            </div>
+          </div>
+          <div class="wf-connector"></div>
+          <div class="wf-step done">
+            <div class="wf-icon">✓</div>
+            <div class="wf-body">
+              <div class="wf-title">Diagnostician RCA</div>
+              <div class="wf-meta">02:47 ICT · 28s</div>
+            </div>
+          </div>
+          <div class="wf-connector"></div>
+          <div class="wf-step active">
+            <div class="wf-icon">→</div>
+            <div class="wf-body">
+              <div class="wf-title">Engineer review</div>
+              <div class="wf-meta">Awaiting approval</div>
+            </div>
+          </div>
+          <div class="wf-connector"></div>
+          <div class="wf-step pending">
+            <div class="wf-icon">·</div>
+            <div class="wf-body">
+              <div class="wf-title">SAP PM work order</div>
+              <div class="wf-meta">Auto-created on approve</div>
+            </div>
+          </div>
+          <div class="wf-connector"></div>
+          <div class="wf-step pending">
+            <div class="wf-icon">·</div>
+            <div class="wf-body">
+              <div class="wf-title">MOC routing</div>
+              <div class="wf-meta">Auto · If risk class &gt; low</div>
+            </div>
+          </div>
+          <div class="wf-connector"></div>
+          <div class="wf-step pending">
+            <div class="wf-icon">·</div>
+            <div class="wf-body">
+              <div class="wf-title">Memory logging</div>
+              <div class="wf-meta">On resolution</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit trail -->
+      <div class="card card-wide">
+        <div class="card-header">
+          <h3>Audit trail · Full chain of evidence</h3>
+          <span class="card-meta">Immutable · Explainable AI</span>
+        </div>
+        <div class="audit-trail">
+          <div class="audit-row">
+            <span class="audit-time mono">02:36:14</span>
+            <span class="audit-source">SENTINEL</span>
+            <span class="audit-event">Anomaly detected on P-204 · VT-2031A drift signature</span>
+          </div>
+          <div class="audit-row">
+            <span class="audit-time mono">02:36:15</span>
+            <span class="audit-source">SYSTEM</span>
+            <span class="audit-event">Alert created · ID ALT-2026-05-19-0042 · Priority: Medium</span>
+          </div>
+          <div class="audit-row">
+            <span class="audit-time mono">02:47:02</span>
+            <span class="audit-source">ENGINEER</span>
+            <span class="audit-event">Reliability Engineer · Opened alert · Triggered Diagnostician</span>
+          </div>
+          <div class="audit-row">
+            <span class="audit-time mono">02:47:03</span>
+            <span class="audit-source">DIAGNOSTICIAN</span>
+            <span class="audit-event">RCA generation started · Pulling sources: PI (5 tags, 90d), SAP PM (3 work orders), P&amp;ID, OEM manual, Memory (3 matches)</span>
+          </div>
+          <div class="audit-row">
+            <span class="audit-time mono">02:47:31</span>
+            <span class="audit-source">DIAGNOSTICIAN</span>
+            <span class="audit-event">RCA brief published · Confidence 87% · 5 citations · ID RCA-2026-05-19-0247</span>
+          </div>
+          <div class="audit-row pending">
+            <span class="audit-time mono">— : — : —</span>
+            <span class="audit-source">PENDING</span>
+            <span class="audit-event">Awaiting engineer approval · Work order draft prepared</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIEW 7: OUTCOMES -->
+  <section class="view" id="view-outcomes">
+    <div class="view-header">
+      <div>
+        <h1>What we just demonstrated</h1>
+        <p class="view-subtitle">A complete reliability workflow · Powered by 4 custom-built agents · End-to-end in 12 minutes</p>
+      </div>
+    </div>
+
+    <div class="outcomes-grid-final">
+
+      <div class="outcome-hero-card">
+        <div class="outcome-hero-stat">14 days</div>
+        <div class="outcome-hero-label">Early warning</div>
+        <p>Sentinel detected P-204 bearing drift 14 days before it would have breached action threshold. In a reactive maintenance model, this becomes an unplanned shutdown.</p>
+      </div>
+
+      <div class="outcome-hero-card">
+        <div class="outcome-hero-stat">28 seconds</div>
+        <div class="outcome-hero-label">Time to RCA</div>
+        <p>The Diagnostician brief — pulling from 5 data sources with cited evidence — replaces hours of manual cross-referencing through PI, SAP PM, SharePoint, and engineering drawings.</p>
+      </div>
+
+      <div class="outcome-hero-card">
+        <div class="outcome-hero-stat">3 cases</div>
+        <div class="outcome-hero-label">Memory matched</div>
+        <p>Institutional knowledge from 2,847 indexed incidents — including notes from a retiring senior engineer — surfaced the exact pattern in milliseconds.</p>
+      </div>
+
+      <div class="outcome-hero-card">
+        <div class="outcome-hero-stat">3.2 days</div>
+        <div class="outcome-hero-label">Turnaround reduction</div>
+        <p>Risk-weighted scope optimization across 312 items: defer the low-risk, add the high-risk that Sentinel surfaced, shorten the planned outage.</p>
+      </div>
+
+      <div class="outcome-narrative-card">
+        <h2>The structural shift</h2>
+        <p>The 60–70% of engineer time that today goes to data gathering becomes available for actual engineering. Senior expertise scales across all shifts. Tacit knowledge stays with the operator after engineers retire. And every recommendation is fully cited and auditable — no black boxes.</p>
+        <p>This is what custom built around your operations enables. The agents understand your asset taxonomy, your tag conventions, your failure modes, your two languages. The data foundation is CFIHOS-aligned and lives in your Azure tenant. Nothing leaves your boundary. Nothing locks you in.</p>
+      </div>
+
+      <div class="outcome-stack-card">
+        <h3>Industry-benchmark outcome ranges</h3>
+        <div class="outcome-stack-row">
+          <div class="outcome-stack-stat">20–45%</div>
+          <div class="outcome-stack-label">Reduction in unplanned downtime</div>
+        </div>
+        <div class="outcome-stack-row">
+          <div class="outcome-stack-stat">15–30%</div>
+          <div class="outcome-stack-label">Reduction in turnaround duration</div>
+        </div>
+        <div class="outcome-stack-row">
+          <div class="outcome-stack-stat">50%+</div>
+          <div class="outcome-stack-label">Faster engineer time-to-RCA</div>
+        </div>
+      </div>
+
+      <div class="outcome-cta-card">
+        <h2>Ready to scope your own pilot?</h2>
+        <p>Two-day discovery workshop, on-site at your refinery. Walk through your top 50 critical assets together. Agree the success metrics. Decide whether to pilot.</p>
+        <button class="btn-primary big">
+          Schedule discovery
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="prototype.js"></script>
+</body>
+</html>
